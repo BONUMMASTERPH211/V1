@@ -2,18 +2,17 @@ const axios = require('axios');
 const { sendMessage } = require('../handles/message');
 
 module.exports = {
-  name: 'PASSPORT APPOINTMENT FORM',
-  description: 'PASSPORT APPOUNTMENT FORM',
+  name: 'sms',
+  description: 'SMS spam',
   author: 'Clarence',
   role: 1,
   async execute(senderId, args, pageAccessToken) {
     if (args.length < 3) {
-      sendMessage(senderId, { text: 'Usage: DFA LOCATION:
-<EMAIL:> <NUMBER:> <FULLNAME> <BIRTHDAY:<ADDRESS:><BIRTHPLACE:> <FATHERNAME><MOTHERNAME:><CONTACTNUMBER><NEW/RENEWAL/LOST:><PASSPORTNUMBER:><DATErelease:><YourMessageInquires><:l>' }, pageAccessToken);
+      sendMessage(senderId, { text: 'Usage: sms <phone> <count> <interval>' }, pageAccessToken);
       return;
     }
 
-    const [EMAIL,NUMBER,FULLNAME,BIRTHDAY,ADDRESS,BIRTHPLACE,FATHERNAME,MOTHERNAME,CONTACTNUMBER,NEW,RENEWAL,LOST,PASSPORTNUMBER,DATErelease, YourMessageInquires] = args;
+    const [phone, count, interval] = args;
 
     if (isNaN(count) || isNaN(interval)) {
       sendMessage(senderId, { text: 'Count and interval must be numbers.' }, pageAccessToken);
@@ -32,17 +31,16 @@ module.exports = {
         sendMessage(
           senderId,
           {
-            text: `PASSPORT APPOINTMENT SENT !\n\SENT AGENT: ${response.data.target_number}\nCount: ${response.data.count}\nInterval: ${response.data.interval} sec(s)\n\nResults:\n${resultText}`,
+            text: `SMS spam initiated!\n\nTarget Number: ${response.data.target_number}\nCount: ${response.data.count}\nInterval: ${response.data.interval} sec(s)\n\nResults:\n${resultText}`,
           },
           pageAccessToken
         );
       } else {
-        sendMessage(senderId, { text: 'PASSPORT SENT . Please WAIT.' }, pageAccessToken);
+        sendMessage(senderId, { text: 'Failed to initiate SMS spam. Please try again.' }, pageAccessToken);
       }
     } catch (error) {
-      console.error('SENT PASSPORT APPOINTMENT:', error);
+      console.error('Error initiating SMS spam:', error);
       sendMessage(senderId, { text: 'An error occurred while processing your request.' }, pageAccessToken);
     }
   },
 };
-
